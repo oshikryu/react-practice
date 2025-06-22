@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react';
+import './App.css';
 import Result from './Result'
 import './App.css';
 
@@ -9,10 +10,23 @@ const appState = {
   FINAL: 'FINAL'
 }
 
+
+export function useCustomHook(prev, cur) {
+  const [sum, setSum] = useState(prev + cur)
+  const updateSum = (first, second) => {
+    setSum(first + second)
+  }
+
+  return [sum, updateSum]
+}
+
+
+
 function App() {
   const [state, setState] = React.useState(appState.INITIAL);
   const [names, setNames] = React.useState(['']);
-  const [results, setResults] = React.useState([]);
+  const [results, setResults] = useState([]);
+  const [sum, updateSum] = useCustomHook(0, 0)
   const inputsRef = React.useRef([])
 
   React.useEffect(() => {
@@ -63,9 +77,10 @@ function App() {
         </div>
       </div>
       <div className="result">
-        {state === appState.INITIAL && <button className="big-button" type="button">Find out!</button>}
+        {state === appState.INITIAL && <button className="big-button" type="button"  onClick={() => updateSum(sum, 1)}>Find out!</button>}
         {state === appState.LOADING && <div>loading</div>}
-        {state === appState.FINAL && <Result results={results} resetState={resetState} />}
+    {state === appState.FINAL && <Result results={results} resetState={resetState} />}
+        {sum}
       </div>
     </div>
   );
